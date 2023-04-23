@@ -118,6 +118,6 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     }
-    // std::cerr << "Could not find executable " << program_name << " in WRAPPER_PATH and program path." << std::endl;
-    // return 1;
+    std::cerr << "Could not find executable " << program_name << " in WRAPPER_PATH and program path." << std::endl;
+    return 1;
 }

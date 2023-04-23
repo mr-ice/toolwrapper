@@ -71,14 +71,6 @@ int main(int argc, char* argv[]) {
     // append the previously determined program_path
     paths.push_back(program_path);
 
-    // // Check that each path is a readable directory
-    // auto end_it = std::remove_if(paths.begin(), paths.end(), [](const std::string& path) {
-    //     fs::path dir_path(path);
-    //     return !fs::is_directory(dir_path) || !fs::exists(dir_path);
-    // });
-
-    // paths.erase(end_it, paths.end());
-
     // Print out the list of paths
     std::cout << "Search Directories" << std::endl;
     for (const auto& path : paths) {

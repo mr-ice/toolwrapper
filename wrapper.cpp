@@ -7,7 +7,11 @@
 #include <iterator>
 #include <fstream>
 
+#ifdef TARGET_OS_X
 namespace fs = std::__fs::filesystem;
+#else
+namespace fs = std::filesystem;
+#endif
 
 static bool endsWith(const std::string& str, const std::string& suffix)
 {

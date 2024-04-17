@@ -105,18 +105,19 @@ int main(int argc, char* argv[]) {
         std::cout << "checking " << dir << " for " <<  program_name << std::endl;
         fs::path path = dir / program_name;
         if (fs::exists(path) && fs::is_regular_file(path)) {
+            // Found the program config, read the PATH value from the file
             std::string new_dir = readWrapperConfig(path.string());
             fs::path new_path(new_dir);
             new_path = new_path / program_name;
-            // Found the program config, read the PATH value from the file
-            std::string old_path = std::getenv("PATH");
-            if (old_path.empty()) {
-                std::cerr << "PATH environment variable not found, aborting" << std::endl;
-                return 1;
-            }
-            std::string merged_path = new_path.string() + ":" + old_path;
-            setenv("PATH", merged_path.c_str(), 1);
-            std::cout << "path is " << path << std::endl;
+            // std::string old_path = std::getenv("PATH");
+            // if (old_path.empty()) {
+            //     std::cerr << "PATH environment variable not found, aborting" << std::endl;
+            //     return 1;
+            // }
+            // std::string merged_path = new_path.string() + ":" + old_path;
+            // setenv("PATH", merged_path.c_str(), 1);
+            // std::cout << "path is " << path << std::endl;
+
             execv(new_path.c_str(), argv);
             perror("execv");
             return 1;

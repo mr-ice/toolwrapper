@@ -1,37 +1,35 @@
-# Specify the C++ compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++17
+CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
 
-# Define the target executable name (default is "a.out")
-TARGET = a.out
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
 
-# Define the source file
-SRC = wrapper.cpp
+VERSION = 0.2
 
-# Define the object file
-OBJ = $(SRC:.cpp=.o)
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 
-# Define the default target (build the executable)
-all: $(TARGET)
+PARSER_OBJS = $(OBJ_DIR)/load_config.o $(OBJ_DIR)/main.o
+WRAPPER_OBJS = $(OBJ_DIR)/load_config.o $(OBJ_DIR)/wrapper.o
 
-# Define the target to build the executable
-$(TARGET): $(OBJ)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+TARGET = $(BIN_DIR)/config_parser
 
-# Define the target to build the object file
-$(OBJ): $(SRC)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+all: $(TARGET) $(BIN_DIR)/wrapper-v$(VERSION)
 
-# Define the "clean" target to remove generated files
+$(BIN_DIR)/wrapper-v$(VERSION): $(WRAPPER_OBJS)
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+$(TARGET): $(PARSER_OBJS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
 clean:
-	rm -f $(OBJ) $(TARGET)
-	rm -f bin/$(TARGET)
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
 
-# Define the phony targets (targets that don't generate files)
-.PHONY: all clean install
-
-install: $(TARGET)
-	cp $(TARGET) bin
-
-rfp: read_file_find_path.o read_file_path.o
-	$(CXX) $(CXXFLAGS) read_file_find_path.o read_file_path.o -o $@
+.PHONY: all clean
